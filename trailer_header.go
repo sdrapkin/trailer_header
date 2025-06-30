@@ -25,6 +25,7 @@ const trailerHeaderName = "X-Body-Byte-Length"
 
 // serverHandler processes requests with potential trailer headers
 func serverHandler(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close() // Ensure the request body is closed
 	log.Println("Server: Received request")
 	log.Printf("Server: Request Method: %s", r.Method)
 
@@ -46,7 +47,6 @@ func serverHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 		return
 	}
-	defer r.Body.Close() // Ensure the body is closed
 
 	log.Printf("Server: Read request body (%d bytes): %s", len(body), string(body))
 	calculatedBodyLength := len(body)
